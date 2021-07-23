@@ -37,8 +37,8 @@ class Fold(Module):
         else:
             raise TypeError(f'Expected `padding` type is `int` or `tuple` but got `{type(padding).__name__}`')
 
-    def forward(self, input: numpy.ndarray) -> numpy.ndarray:
-        N, C, H, W = input.shape
+    def forward(self, input: numpy.ndarray, input_shape: Tuple[int, ...]) -> numpy.ndarray:
+        N, C, H, W = input_shape
 
         output_h: int = math.floor(
             (H + 2 * self.padding[0] - 1 * (self.kernel_size[0] - 1) - 1) / self.stride[0]
