@@ -1,6 +1,6 @@
 import math
 
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import numpy
 
@@ -59,16 +59,18 @@ class Conv2d(Module):
         self.unfold: Unfold = Unfold(self.kernel_size, self.stride, self.padding)
         self.fold: Fold = Fold(self.kernel_size, self.stride, self.padding)
 
-        self.input: numpy.ndarray = None
-        self.unfolded: numpy.ndarray = None
-        self.unfolded_weight: numpy.ndarray = None
+        self.input_shape: Optional[Tuple[int, ...]] = None
+
+        self.input: Optional[numpy.ndarray] = None
+        self.unfolded: Optional[numpy.ndarray] = None
+        self.unfolded_weight: Optional[numpy.ndarray] = None
 
         self.dW = None
         self.db = None
     
     # @jit
     def forward(self, input: numpy.ndarray) -> numpy.ndarray:
-        N, _, H, W = input.shape
+        N, _, H, W = self.input_shape = input.shape
 
         output_h: int = math.floor(
             (H + 2 * self.padding[0] - 1 * (self.kernel_size[0] - 1) - 1) / self.stride[0]
@@ -99,6 +101,6 @@ class Conv2d(Module):
         self.dW = self.dW.transpose(1, 0).reshape(self.out_channels, self.in_channels, self.kernel_size[0], self.kernel_size[1])
 
         d_unfolded = numpy.dot(dout, self.unfolded_weight.T)
-        dx = self.fold(d_unfolded)
+        dx = self.fold(d_unfolded, self.input_shape)
 
         return dx
