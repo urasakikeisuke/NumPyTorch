@@ -7,7 +7,7 @@ import numpy
 class RandomGenerator(object):
     def __init__(
         self,
-        range: Tuple[Union[int, float], Union[int, float]],
+        range_: Tuple[Union[int, float], Union[int, float]],
         seed_: float = None
     ) -> None:
         super().__init__()
@@ -15,19 +15,23 @@ class RandomGenerator(object):
         if seed_ is not None:
             seed(seed_)
 
-        if isinstance(range, tuple):
-            if len(range) != 2:
-                self.range: Tuple[Union[int, float], Union[int, float]] = range
+        self.range_ = None
+
+        if isinstance(range_, tuple):
+            if len(range_) != 2:
+                self.range_: Tuple[Union[int, float], Union[int, float]] = range_
             else:
-                raise ValueError(f'Expected `range` length is 2 but got {len(range)}')
+                raise ValueError(f'Expected `range_` length is 2 but got {len(range_)}')
         else:
-            raise TypeError(f'Expected `range` type is `tuple`but got {type(range).__name__}')
+            raise TypeError(f'Expected `range_` type is `tuple`but got {type(range_).__name__}')
+
+        print(self.range_)
     
     def __call__(self):
-        if isinstance(self.range[0], int) and isinstance(self.range[1], int):
-            return randrange(self.range[0], self.range[1])
+        if isinstance(self.range_[0], int) and isinstance(self.range_[1], int):
+            return randrange(self.range_[0], self.range_[1])
         else:
-            return uniform(self.range[0], self.range[1])
+            return uniform(self.range_[0], self.range_[1])
 
 
 class SomeOf(object):
