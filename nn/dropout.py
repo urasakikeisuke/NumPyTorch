@@ -2,6 +2,8 @@ from .module import Module
 
 import numpy
 
+from numba import jit
+
 
 class Dropout(Module):
     def __init__(
@@ -17,6 +19,7 @@ class Dropout(Module):
 
         self.mask: numpy.ndarray = None
 
+    @jit
     def forward(self, input: numpy.ndarray, training: bool) -> numpy.ndarray:
         if training:
             self.mask = numpy.random.rand(*input.shape) > self.p
@@ -24,5 +27,6 @@ class Dropout(Module):
         else:
             return input * (1. - self.p)
 
+    @jit
     def backward(self, dout: numpy.ndarray) -> numpy.ndarray:
         return dout * self.mask
