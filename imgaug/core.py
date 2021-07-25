@@ -19,7 +19,7 @@ class RandomGenerator(object):
             if len(range) != 2:
                 self.range: Tuple[Union[int, float], Union[int, float]] = range
             else:
-                ValueError(f'Expected `range` length is 2 but got {len(range)}')
+                raise ValueError(f'Expected `range` length is 2 but got {len(range)}')
         else:
             raise TypeError(f'Expected `range` type is `tuple`but got {type(range).__name__}')
     
