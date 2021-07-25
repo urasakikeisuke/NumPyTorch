@@ -18,15 +18,13 @@ class RandomGenerator(object):
         self.range_ = None
 
         if isinstance(range_, tuple):
-            if len(range_) != 2:
+            if len(range_) == 2:
                 self.range_: Tuple[Union[int, float], Union[int, float]] = range_
             else:
                 raise ValueError(f'Expected `range_` length is 2 but got {len(range_)}')
         else:
             raise TypeError(f'Expected `range_` type is `tuple`but got {type(range_).__name__}')
 
-        print(self.range_)
-    
     def __call__(self):
         if isinstance(self.range_[0], int) and isinstance(self.range_[1], int):
             return randrange(self.range_[0], self.range_[1])
