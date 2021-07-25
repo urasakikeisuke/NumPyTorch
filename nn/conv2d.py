@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Union
 
 import numpy
 
-# from numba import jit
+from numba import jit
 from .unfold import Unfold
 from .fold import Fold
 from .module import Module
@@ -68,7 +68,7 @@ class Conv2d(Module):
         self.dW = None
         self.db = None
     
-    # @jit
+    @jit
     def forward(self, input: numpy.ndarray) -> numpy.ndarray:
         N, _, H, W = self.input_shape = input.shape
 
@@ -93,6 +93,7 @@ class Conv2d(Module):
 
         return output
 
+    @jit
     def backward(self, dout: numpy.ndarray) -> numpy.ndarray:
         dout = dout.transpose(0, 2, 3, 1).reshape(-1, self.out_channels)
 
