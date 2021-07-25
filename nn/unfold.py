@@ -5,6 +5,8 @@ from typing import Tuple, Union
 import numpy
 from .module import Module
 
+from numba import jit
+
 
 class Unfold(Module):
     def __init__(
@@ -35,6 +37,7 @@ class Unfold(Module):
         else:
             raise TypeError(f'Expected `padding` type is `int` or `tuple` but got `{type(padding).__name__}`')
     
+    @jit
     def forward(self, input: numpy.ndarray) -> numpy.ndarray:
         N, C, H, W = input.shape
 
