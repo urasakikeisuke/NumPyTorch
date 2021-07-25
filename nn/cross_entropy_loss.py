@@ -3,6 +3,8 @@ from .softmax import Softmax
 
 import numpy
 
+from numba import jit
+
 
 class CrossEntropyLoss(Module):
     def __init__(self) -> None:
@@ -14,6 +16,7 @@ class CrossEntropyLoss(Module):
 
         self.softmax = Softmax()
 
+    @jit
     def forward(self, input: numpy.ndarray, target: numpy.ndarray) -> numpy.ndarray:
         self.target = target
         self.softmaxed: numpy.ndarray = self.softmax(input)
@@ -30,7 +33,8 @@ class CrossEntropyLoss(Module):
         self.loss = -numpy.sum(numpy.log(self.softmaxed[numpy.arange(N), self.target] + eps)) / N
 
         return self.loss
-
+    
+    @jit
     def backward(self, dout: numpy.ndarray = 1) -> numpy.ndarray:
         N: int = self.target.shape[0]
 
