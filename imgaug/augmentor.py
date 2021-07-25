@@ -37,7 +37,8 @@ class ShiftHorizontally(object):
     def exec(self, input: numpy.ndarray) -> numpy.ndarray:
         sam: numpy.ndarray = _get_affine_matrix()
         dam: numpy.ndarray = sam.copy()
-        dam[:, 0] += self.shift() if isinstance(self.shift, RandomGenerator) else self.shift
+        self.shift = self.shift() if isinstance(self.shift, RandomGenerator) else self.shift
+        dam[:, 0] += self.shift
 
         transform: numpy.ndarray = cv2.getAffineTransform(sam, dam)
 
@@ -61,7 +62,8 @@ class ShiftVertically(object):
     def exec(self, input: numpy.ndarray) -> numpy.ndarray:
         sam: numpy.ndarray = _get_affine_matrix()
         dam: numpy.ndarray = sam.copy()
-        dam[:, 1] += self.shift() if isinstance(self.shift, RandomGenerator) else self.shift
+        self.shift = self.shift() if isinstance(self.shift, RandomGenerator) else self.shift
+        dam[:, 1] += self.shift
 
         transform: numpy.ndarray = cv2.getAffineTransform(sam, dam)
 
