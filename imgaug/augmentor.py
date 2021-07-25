@@ -1,7 +1,9 @@
+from typing import Union
 import numpy
 import cv2
 
-from utils import _get_affine_matrix
+from .utils import _get_affine_matrix
+from .core import RandomGenerator
 
 
 class Identity(object):
@@ -21,19 +23,21 @@ class Identity(object):
 class ShiftHorizontally(object):
     def __init__(
         self,
-        shift: float = None
+        shift: Union[int, float, RandomGenerator]
     ) -> None:
         super().__init__()
 
-        if isinstance(shift, float):
+        if isinstance(shift, (int, float)):
             self.shift: float = shift
+        elif isinstance(shift, RandomGenerator):
+            self.shift = shift
         else:
-            raise TypeError(f'Expected `shift` type is `float` but got {type(shift).__name__}')
+            raise TypeError(f'Expected `shift` type is `int` or `float` but got {type(shift).__name__}')
 
     def exec(self, input: numpy.ndarray) -> numpy.ndarray:
         sam: numpy.ndarray = _get_affine_matrix()
         dam: numpy.ndarray = sam.copy()
-        dam[:, 0] += self.shift
+        dam[:, 0] += self.shift() if isinstance(self.shift, RandomGenerator) else self.shift
 
         transform: numpy.ndarray = cv2.getAffineTransform(sam, dam)
 
@@ -43,14 +47,16 @@ class ShiftHorizontally(object):
 class ShiftVertically(object):
     def __init__(
         self,
-        shift: float = None
+        shift: Union[int, float, RandomGenerator]
     ) -> None:
         super().__init__()
 
-        if isinstance(shift, float):
-            self.shift: float = shift
+        if isinstance(shift, (int, float)):
+            self.shift: float = shift() if isinstance(self.shift, RandomGenerator) else self.shift
+        elif isinstance(shift, RandomGenerator):
+            self.shift = shift
         else:
-            raise TypeError(f'Expected `shift` type is `float` but got {type(shift).__name__}')
+            raise TypeError(f'Expected `shift` type is `int` or `float` but got {type(shift).__name__}')
 
     def exec(self, input: numpy.ndarray) -> numpy.ndarray:
         sam: numpy.ndarray = _get_affine_matrix()
@@ -62,39 +68,19 @@ class ShiftVertically(object):
         return cv2.warpAffine(input, transform, (input.shape[1], input.shape[0]))
 
 
-class Scalling(object):
-    def __init__(
-        self,
-        scale: float = None
-    ) -> None:
-        super().__init__()
-
-        if isinstance(scale, float):
-            self.scale: float = scale
-        else:
-            raise TypeError(f'Expected `scale` type is `float` but got {type(scale).__name__}')
-
-    def exec(self, input: numpy.ndarray) -> numpy.ndarray:
-        sam: numpy.ndarray = _get_affine_matrix()
-        dam: numpy.ndarray = sam.copy()
-        dam * self.scale
-
-        transform: numpy.ndarray = cv2.getAffineTransform(sam, dam)
-
-        return cv2.warpAffine(input, transform, (input.shape[1] * 2, input.shape[0] * 2))
-
-
 class ShearHorizontally(object):
     def __init__(
         self,
-        shear: float = None
+        shear: Union[int, float, RandomGenerator]
     ) -> None:
         super().__init__()
 
-        if isinstance(shear, float):
-            self.shear: float = shear
+        if isinstance(shear, (int, float)):
+            self.shear: float = shear() if isinstance(self.shear, RandomGenerator) else self.shear
+        elif isinstance(shear, RandomGenerator):
+            self.shear = shear
         else:
-            raise TypeError(f'Expected `shear` type is `float` but got {type(shear).__name__}')
+            raise TypeError(f'Expected `shear` type is `int` or `float` but got {type(shear).__name__}')
 
     def exec(self, input: numpy.ndarray) -> numpy.ndarray:
         sam: numpy.ndarray = _get_affine_matrix()
@@ -109,14 +95,16 @@ class ShearHorizontally(object):
 class ShearVertically(object):
     def __init__(
         self,
-        shear: float = None
+        shear: Union[int, float, RandomGenerator]
     ) -> None:
         super().__init__()
 
-        if isinstance(shear, float):
-            self.shear: float = shear
+        if isinstance(shear, (int, float)):
+            self.shear: float = shear() if isinstance(self.shear, RandomGenerator) else self.shear
+        elif isinstance(shear, RandomGenerator):
+            self.shear = shear
         else:
-            raise TypeError(f'Expected `shear` type is `float` but got {type(shear).__name__}')
+            raise TypeError(f'Expected `shear` type is `int` or `float` but got {type(shear).__name__}')
 
     def exec(self, input: numpy.ndarray) -> numpy.ndarray:
         sam: numpy.ndarray = _get_affine_matrix()
