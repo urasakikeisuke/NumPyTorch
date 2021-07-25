@@ -2,6 +2,7 @@ from .module import Module
 
 import numpy
 
+from numba import jit
 
 class Linear(Module):
     def __init__(
@@ -35,6 +36,7 @@ class Linear(Module):
         self.dW: numpy.ndarray = None
         self.db: numpy.ndarray = None
     
+    @jit
     def forward(self, input: numpy.ndarray) -> numpy.ndarray:
         self.input_shape = input.shape
         input = input.reshape(input.shape[0], -1)
@@ -44,6 +46,7 @@ class Linear(Module):
 
         return output
 
+    @jit
     def backward(self, dout: numpy.ndarray) -> numpy.ndarray:
         dx: numpy.ndarray = numpy.dot(dout, self.weight.T)
         self.dW = numpy.dot(self.input.T, dout)
