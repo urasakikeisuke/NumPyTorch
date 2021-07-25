@@ -22,7 +22,7 @@ class Dropout(Module):
             self.mask = numpy.random.rand(*input.shape) > self.p
             return input * self.mask
         else:
-            return input
+            return input * (1. - self.p)
 
     def backward(self, dout: numpy.ndarray) -> numpy.ndarray:
         return dout * self.mask
