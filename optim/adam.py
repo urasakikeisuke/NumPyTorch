@@ -1,4 +1,3 @@
-import numpytorch
 from typing import Dict, Optional, Tuple
 import numpy
 
