@@ -4,6 +4,8 @@ import math
 from typing import Tuple, Union
 
 import numpy
+
+from numba import jit
 from .module import Module
 
 
@@ -37,6 +39,7 @@ class Fold(Module):
         else:
             raise TypeError(f'Expected `padding` type is `int` or `tuple` but got `{type(padding).__name__}`')
 
+    @jit
     def forward(self, input: numpy.ndarray, input_shape: Tuple[int, ...]) -> numpy.ndarray:
         N, C, H, W = input_shape
 
