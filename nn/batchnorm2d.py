@@ -3,6 +3,7 @@ from .module import Module
 
 import numpy
 
+from numba import jit
 
 class BatchNorm2d(Module):
     def __init__(
@@ -29,6 +30,7 @@ class BatchNorm2d(Module):
         self.dgamma: Optional[numpy.ndarray] = None
         self.dbeta: Optional[Union[numpy.number[Any], numpy.ndarray]] = None
 
+    @jit
     def forward(self, input: numpy.ndarray, train_flg: bool = True) -> numpy.ndarray:
         self.input_shape = input.shape
         if input.ndim != 2:
@@ -43,7 +45,8 @@ class BatchNorm2d(Module):
         out: numpy.ndarray = self.__forward(input, train_flg)
         
         return out.reshape(*self.input_shape)
-            
+
+    @jit      
     def __forward(self, input: numpy.ndarray, train_flg: bool) -> numpy.ndarray:
         if self.running_mean is None:
             N, D = input.shape
@@ -70,6 +73,7 @@ class BatchNorm2d(Module):
         out: numpy.ndarray = self.gamma * xn + self.beta
         return out
 
+    @jit
     def backward(self, dout: numpy.ndarray) -> numpy.ndarray:
         if dout.ndim != 2:
             N, C, H, W = dout.shape
@@ -80,6 +84,7 @@ class BatchNorm2d(Module):
         dx = dx.reshape(*self.input_shape)
         return dx
 
+    @jit
     def __backward(self, dout: numpy.ndarray) -> numpy.ndarray:
         dbeta = dout.sum(axis=0)
         dgamma = numpy.sum(self.xn * dout, axis=0)
