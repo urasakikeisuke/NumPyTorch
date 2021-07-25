@@ -52,7 +52,7 @@ class ShiftVertically(object):
         super().__init__()
 
         if isinstance(shift, (int, float)):
-            self.shift: float = shift() if isinstance(self.shift, RandomGenerator) else self.shift
+            self.shift: float = shift
         elif isinstance(shift, RandomGenerator):
             self.shift = shift
         else:
@@ -61,7 +61,7 @@ class ShiftVertically(object):
     def exec(self, input: numpy.ndarray) -> numpy.ndarray:
         sam: numpy.ndarray = _get_affine_matrix()
         dam: numpy.ndarray = sam.copy()
-        dam[:, 1] += self.shift
+        dam[:, 1] += self.shift() if isinstance(self.shift, RandomGenerator) else self.shift
 
         transform: numpy.ndarray = cv2.getAffineTransform(sam, dam)
 
@@ -76,7 +76,7 @@ class ShearHorizontally(object):
         super().__init__()
 
         if isinstance(shear, (int, float)):
-            self.shear: float = shear() if isinstance(self.shear, RandomGenerator) else self.shear
+            self.shear: float = shear
         elif isinstance(shear, RandomGenerator):
             self.shear = shear
         else:
@@ -85,6 +85,7 @@ class ShearHorizontally(object):
     def exec(self, input: numpy.ndarray) -> numpy.ndarray:
         sam: numpy.ndarray = _get_affine_matrix()
         dam: numpy.ndarray = sam.copy()
+        self.shear = self.shear() if isinstance(self.shear, RandomGenerator) else self.shear
         dam[:, 0] += (self.shear / input.shape[0] * (input.shape[0] - sam[:, 1])).astype(numpy.float32)
 
         transform: numpy.ndarray = cv2.getAffineTransform(sam, dam)
@@ -100,7 +101,7 @@ class ShearVertically(object):
         super().__init__()
 
         if isinstance(shear, (int, float)):
-            self.shear: float = shear() if isinstance(self.shear, RandomGenerator) else self.shear
+            self.shear: float = shear
         elif isinstance(shear, RandomGenerator):
             self.shear = shear
         else:
@@ -109,6 +110,7 @@ class ShearVertically(object):
     def exec(self, input: numpy.ndarray) -> numpy.ndarray:
         sam: numpy.ndarray = _get_affine_matrix()
         dam: numpy.ndarray = sam.copy()
+        self.shear = self.shear() if isinstance(self.shear, RandomGenerator) else self.shear
         dam[:, 1] += (self.shear / input.shape[1] * (input.shape[1] - sam[:, 0])).astype(numpy.float32)
 
         transform: numpy.ndarray = cv2.getAffineTransform(sam, dam)
