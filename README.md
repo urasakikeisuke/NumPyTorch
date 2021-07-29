@@ -26,7 +26,7 @@ class SimpleConvNet(nn.Module):
 
         self.loss: float = None
 
-        self.conv2d_1 = nn.Conv2d(in_channels=self.in_channels, out_channels=64, kernel_size=3, stride=2, padding=1) # 28 -> 14
+        self.conv2d_1 = nn.Conv2d(self.in_channels, 64, kernel_size=3, stride=2, padding=1) # 28 -> 14
         self.bn_1 = nn.BatchNorm2d(num_features=64)
         self.relu_1 = nn.ReLU(inplace=False)
 
